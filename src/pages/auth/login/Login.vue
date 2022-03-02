@@ -64,6 +64,7 @@ export default {
         console.log(res)
         console.log(res.data)
         console.log(res.data.code)
+        console.log('hello')
         if(res.status===500){
           alert('用户不存在!');
         }
