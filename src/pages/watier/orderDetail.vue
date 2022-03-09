@@ -165,6 +165,7 @@
         options1: [ '一号桌', '二号桌', '三号桌', '四号桌'],
         valueSingle: '一号桌',
         mealOrderId:null,
+        tableName:"一号桌",
         time:null,
         tableId:1,
         waiterId:null,
@@ -173,7 +174,17 @@
         columns,
         createdItem: { ...defaultItem },
         // titles:['一号桌','二号桌','三号桌','四号桌','五号桌','六号桌','七号桌','八号桌']
-        value:0
+        value:0,
+        update:{
+          mealOrder:{
+            tableId:"",
+            isCompleted:"",
+          },
+          orderList:[{
+            x:null,
+            y:null
+          }]
+        }
       }
     },
     computed: {
@@ -262,6 +273,7 @@
 
         this.tableId=1
 
+        this.tableName='一号桌'
         this.meals.splice(0,this.meals.length)
         this.totalPrice = 0
         this.mealOrderId=null
@@ -273,6 +285,7 @@
 
         this.tableId=2
 
+        this.tableName='二号桌'
         this.meals.splice(0,this.meals.length)
         this.totalPrice = 0
         this.mealOrderId=null
@@ -284,6 +297,7 @@
 
         this.tableId=3
 
+        this.tableName='三号桌'
         this.meals.splice(0,this.meals.length)
         this.totalPrice = 0
         this.mealOrderId=null
@@ -295,6 +309,7 @@
 
         this.tableId=4
 
+        this.tableName='四号桌'
         this.meals.splice(0,this.meals.length)
         this.totalPrice = 0
         this.mealOrderId=null
@@ -306,6 +321,7 @@
 
         this.tableId=5
 
+        this.tableName='五号桌'
         // this.meals.splice(0,this.meals.length)
         this.meals = []
         this.totalPrice = 0
@@ -317,6 +333,7 @@
 
         this.tableId=6
 
+        this.tableName='六号桌'
         this.meals.splice(0,this.meals.length)
         this.totalPrice = 0
         this.mealOrderId=null
@@ -327,6 +344,7 @@
 
         this.tableId=7
 
+        this.tableName='七号桌'
         this.meals.splice(0,this.meals.length)
         this.totalPrice = 0
         this.mealOrderId=null
@@ -338,6 +356,7 @@
 
         this.tableId=8
 
+        this.tableName='八号桌'
         this.meals.splice(0,this.meals.length)
         this.totalPrice = 0
         this.mealOrderId=null
@@ -348,8 +367,37 @@
 
 
       click(){
-        this.$vaToast.init({ message: '付款成功', color: 'success',duration:2000 })
-        this.$router.push({ name: 'mealState' })
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
+        const that = this;
+        // if(that.tableName==='一号桌'){
+        //   that.tableId=1
+        // }else if(that.tableName==='二号桌'){
+        //   that.tableId=2
+        // }else if(that.tableName==='三号桌'){
+        //   that.tableId=3
+        // }else if(that.tableName==='四号桌'){
+        //   that.tableId=4
+        // }else if(that.tableName==='五号桌'){
+        //   that.tableId=5
+        // }else if(that.tableName==='六号桌'){
+        //   that.tableId=6
+        // }else if(that.tableName==='七号桌'){
+        //   that.tableId=7
+        // }else if(that.tableName==='八号桌'){
+        //   that.tableId=8
+        // }
+        that.update.mealOrder.tableId=that.tableId
+        console.log(that.tableId)
+        // console.log(this.tableId)
+        that.update.mealOrder.isCompleted = 1
+        that.update.orderList=that.orderList
+
+        this.axios.put("/order/"+that.mealOrderId,that.update).then(res=>{
+          if(res.data.code===200){
+            this.$vaToast.init({ message: '付款成功', color: 'success',duration:2000 })
+            this.$router.push({ name: 'mealState' })
+          }
+        })
       },
     },
     created() {
