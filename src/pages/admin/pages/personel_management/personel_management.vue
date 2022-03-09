@@ -17,6 +17,8 @@
                 name="search"
               />
             </template>
+
+
             <template #appendInner>
               <va-button style="margin-right: 0;width: 80px"
                 flat @click="onsubmit">{{ $t('搜索') }}
@@ -33,7 +35,7 @@
                 colspan="1"
               >
                 <va-input
-                  :placeholder="key"
+                  :placeholder="null"
                   v-model="createdItem[key]"
                 />
               </th>
@@ -42,7 +44,7 @@
                   @click="handleAddSubmit"
                   :disabled="!isNewData"
                 >
-                  Add
+                  添加
                 </va-button>
               </th>
             </tr>
@@ -71,21 +73,22 @@
                 <va-input
                   class="mt-3"
                   v-model="userInfo.name"
-                  label="Username"
-                />
-
-                <va-input
-                  class="mt-3"
-                  v-model="userInfo.password"
-                  type="password"
-                  label="Password"
+                  label="用户名"
                 />
 
                 <va-input
                   class="mt-3"
                   v-model="userInfo.status"
-                  label="Status"
+                  label="身份"
                 />
+
+                <va-input
+                  class="mt-3"
+                  v-model="userInfo.phone"
+                  label="手机号"
+                />
+
+
 
               </va-form>
             </div>
@@ -99,6 +102,7 @@
       </va-card-content>
     </va-card>
 
+
   </div>
 
 
@@ -108,9 +112,8 @@
   import { defineComponent } from 'vue'
 
   const defaultItem = {
-    id: null,
     name: '',
-    status: null,
+    status: '',
     phone:''
   }
 
@@ -118,24 +121,23 @@
     data () {
 
       const columns = [
-        { key: 'id', sortable: true },
-        { key: 'name', sortable: true },
-        { key: 'status', sortable: true },
-        { key: 'phone', sortable: true },
-        { key: 'actions', width: 80 },
+        { key: 'name',label:'名字', sortable: true },
+        { key: 'status',label:'身份', sortable: true },
+        { key: 'phone',label:'手机号', sortable: true },
+        { key: 'actions',label:'操作', width: 80 },
       ]
       return {
         users:[],
         useridInfo:1,
         userInfo:{
           name:"",
-          password:"",
-          status: 0,
+          status: "",
+          phone:""
         },
         userAddInfo:{
           name:"",
           password:"",
-          status: 0,
+          status: "",
           phone:""
         },
         showModal: false,
@@ -152,9 +154,19 @@
 
     methods: {
       getAll(){
-        this.axios.get("http://localhost:8081/user/list").then(res =>{
+        this.axios.get("/user/list").then(res =>{
           console.log(res.data)
           this.users=res.data.data
+          for(let i=0;i<this.users.length;i++){
+            if(this.users[i].status===0){
+              this.users[i].status="管理员"
+            }else if(this.users[i].status===1){
+              this.users[i].status="厨师"
+            }else {
+              this.users[i].status="服务员"
+            }
+          }
+
         })
       },
       onchange(id) {
@@ -162,52 +174,96 @@
         this.showModal = !this.showModal
         this.useridInfo = this.users[id].id
         this.userInfo.name = this.users[id].name
-        this.userInfo.password = this.users[id].password
         this.userInfo.status = this.users[id].status
+        this.userInfo.phone = this.users[id].phone
       },
       onDelete(id){
-        this.axios.delete("http://localhost:8081/user/"+id).then(res =>{
+        this.axios.delete("/user/"+id).then(res =>{
           if(res.data.code===200){
-            console.log("删除成功")
+            // console.log("删除成功")
+            this.$vaToast.init({ message: '删除成功', color: 'success',duration:2000 })
             this.getAll();
           }else {
-            console.log("删除失败")
+            // console.log("删除失败")
+            this.$vaToast.init({ message: '删除失败', color: 'danger',duration:2000 })
             this.getAll();
           }
         })
       },
       /**修改*/
       handleSubmit (e) {
-        alert('-- 提交成功 --')
-        this.axios.put("http://localhost:8081/user/"+this.useridInfo,this.userInfo).then(res =>{
-          console.log("返回了");
-          console.log(res.data);
-        })
-        this.showModal = !this.showModal
-        this.userInfo.usernameInfo = ""
-        this.userInfo.userpasswordInfo = ""
-        this.userInfo.userstatusInfo = 0
-        this.getAll();
+        // alert('-- 提交成功 --')
+        if(this.userInfo.status!=='管理员'&&this.userInfo.status!=='厨师'&&this.userInfo.status!=='服务员'){
+          this.$vaToast.init({ message: '输入身份不合法，请输入：管理员、厨师、服务员', color: 'warning',duration:2000 })
+          return
+        }
+        if (!/^[0-9]{11}$/.test(this.userInfo.phone)) {
+          this.$vaToast.init({ message: '输入手机不合法', color: 'warning',duration:2000 })
+          return;
+        }else {
+          if(this.userInfo.status==="管理员"){
+            this.userInfo.status="0"
+          }else if(this.userInfo.status==="厨师"){
+            this.userInfo.status="1"
+          }else if(this.userInfo.status==="服务员"){
+            this.userInfo.status="2"
+          }
+          this.axios.put("/user/"+this.useridInfo,this.userInfo).then(res =>{
+            console.log("返回了");
+            console.log(res.data);
+            this.$vaToast.init({ message: '修改成功', color: 'success',duration:2000 })
+          })
+          this.showModal = !this.showModal
+          location.reload()
+        }
       },
       /*搜索*/
       onsubmit(){
-        this.axios.post("http://localhost:8081/user/search",this.searchInfo).then(res=>{
-          this.users = res.data.data
-        })
+        if(this.searchInfo===""){
+          location.reload()
+        }else {
+          this.axios.post("/user/search",this.searchInfo).then(res=>{
+            this.users = res.data.data
+            for(let i=0;i<this.users.length;i++){
+              if(this.users[i].status===0){
+                this.users[i].status="管理员"
+              }else if(this.users[i].status===1){
+                this.users[i].status="厨师"
+              }else {
+                this.users[i].status="服务员"
+              }
+            }
+          })
+        }
       },
       handleAddSubmit(e){
-        alert('-- 提交成功 --')
-        this.axios.post("http://localhost:8081/user/new",this.createdItem).then(res =>{
-          console.log("返回了")
-          console.log(res.data)
-        })
-        this.showModal2 = !this.showModal2
-        this.userAddInfo.name = ""
-        this.userAddInfo.password = ""
-        this.userAddInfo.status = 0
-        this.userAddInfo.phone=""
-        this.getAll();
-      }
+        this.userAddInfo.password=this.userAddInfo.phone
+        if(this.createdItem.status!=='管理员'&&this.createdItem.status!=='厨师'&&this.createdItem.status!=='服务员'){
+          this.$vaToast.init({ message: '输入身份不合法，请输入：管理员、厨师、服务员', color: 'warning',duration:2000 })
+          return
+        }
+        if (!/^[0-9]{11}$/.test(this.createdItem.phone)) {
+          this.$vaToast.init({ message: '输入手机不合法', color: 'warning',duration:2000 })
+          return;
+        }else {
+          if(this.createdItem.status==="管理员"){
+            this.createdItem.status="0"
+          }else if(this.createdItem.status==="厨师"){
+            this.createdItem.status="1"
+          }else if(this.createdItem.status==="服务员"){
+            this.createdItem.status="2"
+          }
+          this.axios.post("/user/new",this.createdItem).then(res =>{
+            console.log("返回了")
+            console.log(res.data)
+            this.$vaToast.init({ message: '添加成功', color: 'success',duration:2000 })
+          })
+        }
+        location.reload()
+      },
+      back(){
+        location.reload()
+      },
     },
     created() {
       this.getAll();

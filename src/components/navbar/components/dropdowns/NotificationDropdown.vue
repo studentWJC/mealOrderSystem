@@ -12,20 +12,21 @@
     </template>
     <va-dropdown-content class="notification-dropdown__content pl-3 pr-3 pt-2 pb-2">
       <div
-        v-for="option in computedOptions"
+        v-for="option in notices"
         :key="option.id"
         class="notification-dropdown__item row pt-1 pb-1 mt-2 mb-2"
         :class="{'notification-dropdown__item--unread': option.unread}"
         @click="option.unread = false"
       >
-        <img v-if="option.details.avatar" class="mr-2 notification-dropdown__item__avatar" :src="option.details.avatar"/>
+        <!--<img v-if="option.details.avatar" class="mr-2 notification-dropdown__item__avatar" :src="option.details.avatar"/>-->
         <span class="ellipsis" style="max-width: 85%;">
-          <span class="text--bold" v-if="option.details.name">{{option.details.name}}</span> {{$t(`notifications.${option.name}`, { type: option.details.type })}}
+          <span class="text--bold" v-if="option.title">{{option.title}}</span> <!--{{$t(`notifications.${option.title}`, { type: option.details.type })}}-->
+          {{option.detail}}
         </span>
       </div>
       <div class="row justify--space-between mt-1">
-        <va-button class="md6 mr-2" size="small">{{ $t('notifications.all') }}</va-button>
-        <va-button class="md6" size="small" outline @click="markAllAsRead" :disabled="allRead">{{ $t('notifications.mark_as_read') }}</va-button>
+        <va-button class="md6 mr-2" size="small" @click="getAll">查看全部通知</va-button>
+        <va-button class="md6" size="small" outline @click="markAllAsRead" :disabled="allRead">标记为已读</va-button>
       </div>
     </va-dropdown-content>
   </va-dropdown>
@@ -43,6 +44,8 @@ export default {
   data () {
     return {
       computedOptions: [...this.options],
+      notices:[],
+      num: null
     }
   },
   props: {
@@ -81,11 +84,26 @@ export default {
   },
   methods: {
     markAllAsRead () {
-      this.computedOptions = this.computedOptions.map(item => ({
-        ...item,
-        unread: false,
-      }))
+      this.axios.post("/notice/setread",this.notices).then(res=> {
+        console.log(res.data.data)
+      })
+      this.getAll()
+      this.$store.commit("update_noticeUnRead",this.num)
+      location.reload()
     },
+    getAll() {
+      this.$router.push({name:'tips-all'})
+    },
+    getWeidu() {
+      this.axios.get("/notice/getread").then(res=>{
+        console.log(res.data);
+        this.notices = res.data.data;
+        this.num = this.notices.length;
+      })
+    }
+  },
+  created() {
+    this.getWeidu();
   },
 }
 </script>

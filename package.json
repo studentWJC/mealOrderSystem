@@ -27,15 +27,19 @@
     "leaflet-map": "^0.2.1",
     "medium-editor": "^5.23.3",
     "register-service-worker": "^1.7.1",
+    "sockjs-client": "^1.4.0",
+    "stompjs": "^2.3.3",
     "vue": "^3.2.0",
     "vue-axios": "^3.4.1",
     "vue-chartjs": "^3.5.1",
     "vue-gtm": "^3.2.1",
     "vue-i18n": "^9.0.0",
+    "vue-lazyload": "^1.3.3",
     "vue-router": "^4.0.0-0",
     "vue-yandex-maps": "^0.10.9",
     "vuestic-ui": "^1.2.8",
-    "vuex": "^4.0.0-0"
+    "vuex": "^4.0.0-0",
+    "vue-stomp": "0.0.5"
   },
   "devDependencies": {
     "@types/jest": "^24.0.19",
@@ -61,7 +65,8 @@
     "sass": "^1.41.1",
     "sass-loader": "^8.0.2",
     "typescript": "^4.3.5",
-    "vue-jest": "^5.0.0-0"
+    "vue-jest": "^5.0.0-0",
+    "vue-lazyload": "^1.3.3"
   },
   "lint-staged": {
     "*.{js,jsx,vue,ts,tsx}": [

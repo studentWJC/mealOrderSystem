@@ -13,6 +13,28 @@ const routes: Array<RouteRecordRaw> = [
     redirect: { name: 'login' },
   },
   {
+    name:'watier',
+    path:'/watier',
+    component: AppLayout,
+    children:[
+      {
+        name: 'orderMeal',
+        path: 'orderMeal',
+        component: () => import('@/pages/watier/orderMeal.vue'),
+      },
+      {
+        name: 'orderDetail',
+        path: 'orderDetail',
+        component: () => import('@/pages/watier/orderDetail.vue'),
+      },
+      {
+        name: 'mealState',
+        path: 'mealState',
+        component: () => import('@/pages/watier/mealState.vue'),
+      },
+    ]
+  },
+  {
     name: 'admin',
     path: '/admin',
     component: AppLayout,
@@ -143,6 +165,7 @@ const routes: Array<RouteRecordRaw> = [
         //   },
         // ],
       },
+
       {
         name: 'tips-all',
         path: 'tips-all',

@@ -13,7 +13,7 @@
             <va-tabs v-model="tabIndex" center>
               <template #tabs>
                 <va-tab name="login">{{ $t("登录") }}</va-tab>
-<!--                <va-tab name="signup">{{ $t("auth.createNewAccount") }}</va-tab>-->
+                <va-tab name="signup">{{ $t("验证码登录") }}</va-tab>
               </template>
             </va-tabs>
 

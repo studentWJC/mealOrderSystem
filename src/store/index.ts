@@ -14,7 +14,11 @@ export default createStore({
     token: '',
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     userInfo: JSON.parse(<string > sessionStorage.getItem("userInfo")),
-    name:'WJC'
+    name:'WJC',
+    sideBar: '管理员',
+    orderNum:0,
+    orderPrice:0,
+    noticeUnRead:0,
   },
   mutations: {
     updateSidebarCollapsedState(state, isSidebarMinimized) {
@@ -22,6 +26,23 @@ export default createStore({
     },
     changeUserName(state, newUserName) {
       state.userName = newUserName
+    },
+    // eslint-disable-next-line @typescript-eslint/camelcase
+    update_noticeUnRead(state,num) {
+      state.noticeUnRead = num;
+      sessionStorage.setItem("noticeUnRead",num)
+    },
+    UPDATE_ORDERSPRICE:(state, orderPrice) => {
+      state.orderPrice = orderPrice
+      sessionStorage.setItem("orderPrice",orderPrice)
+    },
+    UPDATE_ORDERSNUM:(state, orderNum) => {
+      state.orderNum = orderNum
+      sessionStorage.setItem("orderNum",orderNum)
+    },
+    UPDATE_SIDEBAR:(state, sideBar) => {
+      state.sideBar = sideBar
+      sessionStorage.setItem("sideBar",sideBar)
     },
     SET_TOKEN:(state, token) => {
       state.token = token
@@ -41,7 +62,19 @@ export default createStore({
   getters: {//get
     getUser: state => {
       return state.userInfo
-    }
+    },
+    getSideBar: state => {
+      return state.sideBar
+    },
+    getOrdersNum: state => {
+      return state.orderNum
+    },
+    getOrdersPrice: state => {
+      return state.orderPrice
+    },
+    getNoticeUnRead:state => {
+      return state.noticeUnRead
+    },
   },
   actions: {
   },

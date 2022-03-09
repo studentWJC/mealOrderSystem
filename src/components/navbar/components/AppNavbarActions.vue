@@ -1,8 +1,10 @@
 <template>
   <div class="app-navbar-actions">
     <color-dropdown class="app-navbar-actions__item"/>
-    <message-dropdown class="app-navbar-actions__item"/>
+    <!--<message-dropdown class="app-navbar-actions__item"/>-->
+    <va-badge class="mr-4" transparent overlap v-bind:text="num">
     <notification-dropdown class="app-navbar-actions__item"/>
+    </va-badge>
     <!-- <settings-dropdown class="app-navbar-actions__item" /> -->
     <language-dropdown class="app-navbar-actions__item"/>
     <profile-dropdown class="app-navbar-actions__item app-navbar-actions__item--profile">
@@ -21,11 +23,14 @@ import SettingsDropdown from './dropdowns/SettingsDropdown'
 
 export default {
   name: 'app-navbar-actions',
-
+  data() {
+    return {
+      num: null,
+    }
+  },
   components: {
     // SettingsDropdown,
     ColorDropdown,
-    MessageDropdown,
     NotificationDropdown,
     LanguageDropdown,
     ProfileDropdown,
@@ -52,6 +57,18 @@ export default {
       },
     },
   },
+  methods: {
+    getWeidu() {
+      this.axios.get("/notice/getread").then(res=>{
+        console.log(res.data);
+        this.num = res.data.data.length;
+        this.$store.commit("update_noticeUnRead",this.num)
+      })
+    }
+  },
+  created() {
+    this.getWeidu();
+  }
 }
 </script>
 
@@ -64,12 +81,12 @@ export default {
     color: var(--va-primary);
     fill: var(--va-primary);
   }
-  
+
   &__item {
     padding: 0;
     margin-left: 1.25rem;
     margin-right: 1.25rem;
-    
+
     svg {
       height: 24px;
     }

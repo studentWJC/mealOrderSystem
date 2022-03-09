@@ -30,34 +30,34 @@ export default {
       // ],
     },
     {
-      name: 'form',
-      displayName: '菜品管理',
+      name: 'form-wizard',
+      displayName: '推荐畅销菜',
       meta: {
         icon: 'vuestic-iconset-forms',
       },
       disabled: true,
-      children: [
-        {
-          name: 'form-wizard',
-          displayName: '推荐畅销菜',
-        },
-        // {
-        //   name: 'form-elements',
-        //   displayName: '热菜',
-        // },
-        // {
-        //   name: 'form-elements',
-        //   displayName: '凉菜',
-        // },
-        // {
-        //   name: 'medium-editor',
-        //   displayName: '小吃',
-        // },
-        // {
-        //   name: 'medium-editor',
-        //   displayName: '饮品',
-        // },
-      ],
+      // children: [
+      //   {
+      //     name: 'form-wizard',
+      //     displayName: '推荐畅销菜',
+      //   },
+      // {
+      //   name: 'form-elements',
+      //   displayName: '热菜',
+      // },
+      // {
+      //   name: 'form-elements',
+      //   displayName: '凉菜',
+      // },
+      // {
+      //   name: 'medium-editor',
+      //   displayName: '小吃',
+      // },
+      // {
+      //   name: 'medium-editor',
+      //   displayName: '饮品',
+      // },
+      // ],
     },
     {
       name: 'tables',

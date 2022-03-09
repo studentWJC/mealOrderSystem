@@ -17,7 +17,7 @@
       <template v-slot:center>
         <span class="app-navbar__text">
           <!--          {{$t('navbar.messageUs')}}-->
-          {{$t('欢迎来到管理员界面！')}}
+          {{$t('欢迎来到'+state+'界面！')}}
           <!--          <a-->
           <!--            href="mailto:hello@epicmax.co"-->
           <!--            target="_blank"-->
@@ -67,10 +67,12 @@ export default {
     })
 
     const userName = computed(() => store.getters.getUser.name)
+    const state = computed(() => sessionStorage.getItem("sideBar"))
     return {
       colors,
       isSidebarMinimized,
-      userName
+      userName,
+      state,
     }
   },
 }
